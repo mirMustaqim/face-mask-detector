@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Mask Detector</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --danger: #dc2626;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1f2937;
+            --border: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Navigation Bar */
+.navbar {
+    background: #ffffff;
+    height: 70px;
+    padding: 0 30px;
+    margin-bottom: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-radius: 16px;
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.08),
+        0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.nav-left {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.refresh-btn {
+    background: var(--primary);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.refresh-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.hero-section {
+    width: 100%;
+    padding: auto;
+     margin-bottom: 2rem;
+    
+}
+
+.hero-content {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 30px;
+
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.hero-text h2 {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+    color: #111827;
+}
+
+.hero-text h3 {
+    font-size: 4rem;
+    margin-bottom: -15px;
+    color: #111827;
+}
+
+.hero-text p {
+    font-size: 1.05rem;
+     font-weight: 600;
+    line-height: 1.7;
+    color: #374151;
+    margin-bottom: 1px;
+}
+
+.hero-image img {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+    .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .hero-image img {
+        max-width: 420px;
+        margin: auto;
+    }
+}
+
+
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 30px;
+
+             background-image: url("image/background.jpg"); /* 👈 your image */
+             background-size: cover;
+             background-position: center;
+             background-repeat: no-repeat;
+             background-attachment: fixed;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 5rem;
+            color: #000000;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            text-align: center;
+            color: #2c313b;
+            margin-bottom: 30px;
+        }
+
+        .dashboard {
+            max-width: 1100px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+    background: var(--card);
+    padding: 25px;
+    border-radius: 16px;
+
+    /* Improved shadow */
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.08),
+        0 4px 10px rgba(0, 0, 0, 0.05);
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+        .card h3 {
+            margin-bottom: 15px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        #uploadedImage {
+            margin-top: 15px;
+            max-width: 260px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            display: none;
+        }
+
+        .webcam-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        video, canvas {
+            width: 224px;
+            height: 224px;
+            border-radius: 14px;
+            border: 4px solid #111827;
+            background: #000;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 22px;
+            font-weight: 600;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            display: none;
+        }
+
+        /* Prediction card */
+        .prediction-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 100%;
+        }
+
+        #result {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-top: 20px;
+        }
+
+        #webcamMessage {
+            color: #6b7280;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-left">
+        AI Face Mask Detector
+    </div>
+
+    <div class="nav-right">
+        <button class="refresh-btn" onclick="location.reload()">Refresh</button>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <div class="hero-content">
+
+        <div class="hero-text">
+            <h3>Group 15 </h3>
+            <h2>AI Face Mask Detection </h2>
+            <p>
+                AI Face Mask Detector is developed using TensorFlow.js
+                and Teachable Machine. It detects whether a person is wearing a
+                face mask through image uploads or live webcam input.
+            </p>
+        </div>
+
+        <div class="hero-image">
+            <img src="image/hero-facemask.jpg" alt="Face Mask Detection Example">
+        </div>
+
+    </div>
+</section>
+
+
+<div class="dashboard">
+
+    <!-- LEFT SIDE -->
+    <div class="left-column">
+
+        <!-- Upload -->
+        <div class="card">
+            <h3>Upload Image</h3>
+            <div class="upload-area">
+                <p>Select an image</p>
+                <input type="file" id="upload" accept="image/*">
+                <img id="uploadedImage">
+            </div>
+        </div>
+
+        <!-- Webcam -->
+        <div class="card">
+            <h3>Webcam Detection</h3>
+
+            <div class="webcam-wrapper">
+                <div id="webcam-container">
+                    <video id="webcam-placeholder"></video>
+                </div>
+
+                <div class="button-group">
+                    <button id="startWebcam" class="btn-primary">Start Webcam</button>
+                    <button id="stopWebcam" class="btn-danger">Stop Webcam</button>
+                </div>
+
+                <p id="webcamMessage"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="card prediction-card">
+        <h3>Confidence Result</h3>
+        <div id="result">Confidence: -</div>
+    </div>
+
+</div>
+
+<script src="main.js"></script>
+</body>
+</html>
