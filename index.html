@@ -126,7 +126,7 @@
             margin: 0;
             padding: 30px;
 
-             background-image: url("image/background.jpg"); /* 👈 your image */
+             background-image: url("image/background.jpg"); 
              background-size: cover;
              background-position: center;
              background-repeat: no-repeat;
@@ -298,38 +298,45 @@
 
 <div class="dashboard">
 
-    <!-- LEFT SIDE -->
-    <div class="left-column">
+ <!-- LEFT SIDE -->
+<div class="left-column">
 
-        <!-- Upload -->
-        <div class="card">
-            <h3>Upload Image</h3>
-            <div class="upload-area">
-                <p>Select an image</p>
-                <input type="file" id="upload" accept="image/*">
-                <img id="uploadedImage">
-            </div>
-        </div>
-
-        <!-- Webcam -->
-        <div class="card">
-            <h3>Webcam Detection</h3>
-
-            <div class="webcam-wrapper">
-                <div id="webcam-container">
-                    <video id="webcam-placeholder"></video>
-                </div>
-
-                <div class="button-group">
-                    <button id="startWebcam" class="btn-primary">Start Webcam</button>
-                    <button id="stopWebcam" class="btn-danger">Stop Webcam</button>
-                </div>
-
-                <p id="webcamMessage"></p>
-            </div>
-        </div>
-
+    <!-- Toggle Buttons -->
+    <div class="button-group" style="justify-content:center; margin-bottom:20px;">
+        <button id="btnUpload" class="btn-primary">Upload Image</button>
+        <button id="btnWebcam" class="btn-primary">Webcam</button>
     </div>
+
+    <!-- Upload Section -->
+    <div class="card" id="uploadSection">
+        <h3>Upload Image</h3>
+        <div class="upload-area">
+            <p>Select an image</p>
+            <input type="file" id="upload" accept="image/*">
+            <img id="uploadedImage">
+        </div>
+    </div>
+
+    <!-- Webcam Section -->
+    <div class="card" id="webcamSection" style="display:none;">
+        <h3>Webcam Detection</h3>
+
+        <div class="webcam-wrapper">
+            <div id="webcam-container">
+                <video id="webcam-placeholder"></video>
+            </div>
+
+            <div class="button-group">
+                <button id="startWebcam" class="btn-primary">Start Webcam</button>
+                <button id="stopWebcam" class="btn-danger">Stop Webcam</button>
+            </div>
+
+            <p id="webcamMessage"></p>
+        </div>
+    </div>
+
+</div>
+
 
     <!-- RIGHT SIDE -->
     <div class="card prediction-card">
