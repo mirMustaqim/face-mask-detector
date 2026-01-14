@@ -1,4 +1,4 @@
-// Use a single declaration block to avoid "already declared" errors
+
 let model, maxPredictions, webcam;
 let isWebcamRunning = false;
 let animationId;
@@ -9,6 +9,10 @@ const uploadedImage = document.getElementById("uploadedImage");
 const startBtn = document.getElementById("startWebcam");
 const stopBtn = document.getElementById("stopWebcam");
 const webcamMessage = document.getElementById("webcamMessage");
+const btnUpload = document.getElementById("btnUpload");
+const btnWebcam = document.getElementById("btnWebcam");
+const uploadSection = document.getElementById("uploadSection");
+const webcamSection = document.getElementById("webcamSection");
 
 // 1. Initialize Model
 async function init() {
@@ -52,7 +56,7 @@ startBtn.addEventListener("click", async () => {
         
         isWebcamRunning = true;
         
-        // Replace placeholder with actual webcam canvas
+        
         const container = document.getElementById("webcam-container");
         container.innerHTML = ""; // Clear placeholder
         container.appendChild(webcam.canvas);
@@ -116,7 +120,7 @@ function showPrediction(predictions) {
         finalColor = "#f59e0b"; // orange
     }
 
-    // Build UI
+
     let html = `
         <div style="font-size:32px; font-weight:bold; color:${finalColor};">
             FINAL RESULT: ${finalText}
@@ -139,4 +143,29 @@ function showPrediction(predictions) {
     resultDiv.innerHTML = html;
 }
 
+// Toggle function
+btnUpload.addEventListener("click", () => {
+    uploadSection.style.display = "block";
+    webcamSection.style.display = "none";
 
+    // Stop webcam if running
+    if (isWebcamRunning && webcam) {
+        webcam.stop();
+        isWebcamRunning = false;
+        window.cancelAnimationFrame(animationId);
+        const container = document.getElementById("webcam-container");
+        container.innerHTML = '<video id="webcam-placeholder" width="224" height="224" style="background: #000;"></video>';
+        startBtn.style.display = "inline-block";
+        stopBtn.style.display = "none";
+    }
+
+    btnUpload.classList.add("active");
+    btnWebcam.classList.remove("active");
+});
+
+btnWebcam.addEventListener("click", () => {
+    uploadSection.style.display = "none";
+    webcamSection.style.display = "block";
+    btnWebcam.classList.add("active");
+    btnUpload.classList.remove("active");
+});
