@@ -1,4 +1,3 @@
-// Use a single declaration block to avoid "already declared" errors
 let model, maxPredictions, webcam;
 let isWebcamRunning = false;
 let animationId;
@@ -91,9 +90,34 @@ async function loop() {
 }
 
 function showPrediction(predictions) {
-    let highest = predictions.reduce((prev, curr) => (prev.probability > curr.probability) ? prev : curr);
-    const confidence = (highest.probability * 100).toFixed(0);
-    
-    resultDiv.innerText = `Prediction: ${highest.className} (${confidence}%)`;
-    resultDiv.style.color = highest.className.toLowerCase().includes("no") ? "red" : "green";
+    // Find highest confidence class
+    const highest = predictions.reduce((a, b) =>
+        a.probability > b.probability ? a : b
+    );
+
+    let html = "";
+
+    // Final result headline
+    if (highest.className.toLowerCase().includes("wear")) {
+        html += `<div style="font-size:32px; font-weight:bold; color:green;">
+                    FINAL RESULT: WEAR MASK 
+                 </div>`;
+    } else {
+        html += `<div style="font-size:32px; font-weight:bold; color:red;">
+                    FINAL RESULT: NO MASK 
+                 </div>`;
+    }
+
+    html += `<hr style="margin:10px 0;">`;
+
+    // Show all confidences
+    predictions.forEach(pred => {
+        const percent = (pred.probability * 100).toFixed(1);
+        html += `<div style="font-size:18px;">
+                    ${pred.className}: ${percent}%
+                 </div>`;
+    });
+
+    resultDiv.innerHTML = html;
 }
+
