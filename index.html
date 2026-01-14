@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Mask Detector</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.18.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5/dist/teachablemachine-image.min.js"></script>
+    
+    <style>
+        body { font-family: Arial; text-align: center; margin-top: 20px; background-color: #f4f4f4; }
+        video, canvas { border: 4px solid #333; border-radius: 10px; max-width: 100%; }
+        #uploadedImage { max-width: 300px; margin-top: 10px; display: none; }
+        button { margin: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        #result { font-size: 28px; font-weight: bold; margin-top: 15px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Face Mask Detector</h2>
+
+    <div style="margin-bottom: 30px;">
+        <h3>Upload Image</h3>
+        <input type="file" id="upload" accept="image/*"><br>
+        <img id="uploadedImage" style="display:none; max-width: 300px; margin-top: 10px; border: 2px solid #ddd;">
+    </div>
+
+    <hr>
+
+    <h3>Webcam Detection</h3>
+    <div id="webcam-container">
+        <video id="webcam-placeholder" width="224" height="224" style="background: #000;"></video>
+    </div>
+    <br>
+    <button id="startWebcam">Start Webcam</button>
+    <button id="stopWebcam" style="display:none; background-color: #dc3545;">Stop Webcam</button>
+    
+    <p id="webcamMessage"></p>
+    <p id="result">Prediction: -</p>
+
+    <script src="main.js"></script>
+</body>
